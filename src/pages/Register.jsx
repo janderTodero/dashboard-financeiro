@@ -27,14 +27,14 @@ export default function Register () {
             const { token } = response.data;
 
             login(token)
-            navigate("/dashboard")
+            navigate("/")
         } catch (error) {
             console.error(error)
 
             if (error.response && error.response.data && error.response.data.message) {
                 setError(error.response.data.message);
             } else {
-                setError("Erro ao registrar. Tente novamente.");
+                setError("Error to register. Try again later");
             }
         }
     };

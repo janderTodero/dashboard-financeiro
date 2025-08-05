@@ -17,11 +17,11 @@ export default function Login() {
 
         try {
             const response = await api.post("/auth/login", { email, password });
-            const { token } = response.data;
+            const { token, user } = response.data;
 
-            login(token);
+            login(token, user.name);
 
-            navigate("/dashboard");
+            navigate("/");
         } catch (error) {
             console.error(error)
             setError("Inválid email, or password.")
