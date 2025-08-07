@@ -14,7 +14,6 @@ export function TransactionsProvider({ children }) {
             try {
                 const response = await api.get("/transactions");
                 setTransactions(response.data)
-                console.log("Transacoes recebidas:", response.data)
             } catch (error) {
                 console.error("Erro ao buscar transações:", error)
             } finally {

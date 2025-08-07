@@ -18,7 +18,6 @@ export default function useTransactionSummary() {
             .reduce((acc, t) => acc + t.amount, 0);
 
         const total = entradas - saidas;
-        console.log(transactions)
 
         return { entradas, saidas, total };
     }, [transactions, loading]);
