@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import { TransactionsProvider } from "./context/TransactionsContext.jsx";
+import NewTransaction from "./pages/newTransaction.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -17,6 +18,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="/register" element={<Register />} />
           <Route element={<App />}>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/newTransaction" element={<NewTransaction />} />
           </Route>
         </Routes>
       </TransactionsProvider>

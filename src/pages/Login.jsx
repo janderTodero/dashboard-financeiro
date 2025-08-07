@@ -22,7 +22,7 @@ export default function Login() {
       const response = await api.post("/auth/login", { email, password });
       const { token, user } = response.data;
 
-      login(token, user.name);
+      login(token, response.data.user);
       navigate("/");
     } catch (error) {
       console.error(error);
