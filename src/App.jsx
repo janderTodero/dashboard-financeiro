@@ -1,12 +1,13 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "./components/Sidebar";
+import PrivateRoute from "./components/PrivateRoute";
 
 
 export default function App() {
   return (
-    <div className="app">
-      <Sidebar />
-      <Outlet />
-    </div>
+    <PrivateRoute>
+      <div className="app">
+        <Outlet />
+      </div>
+    </PrivateRoute>
   );
 }
