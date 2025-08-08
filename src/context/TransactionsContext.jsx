@@ -25,7 +25,7 @@ export function TransactionsProvider({ children }) {
 
     async function addTransaction(transaction) {
         try {
-            const response = await axios.post("/api/transactions", transaction);
+            const response = await api.post("/transactions", transaction);
             setTransactions((prev) => [...prev, response.data]);
         } catch (error) {
             console.log("Erro ao adicionar transação:", error)
@@ -34,12 +34,37 @@ export function TransactionsProvider({ children }) {
 
     async function deleteTransaction(id) {
         try {
-            await axios.delete(`/api/transactions/${id}`)
+            await api.delete(`/transactions/${id}`)
             setTransactions((prev) => prev.filter((t) => t._id !== id))
         } catch (error) {
             console.log("Erro ao deletar transação:", error)
         }
     }
+
+    async function getTransaction(id) {
+  try {
+    const response = await axios.get(`/transactions/${id}`);
+    
+    
+    if (response.data) {
+      return response.data;
+    } else {
+      throw new Error('Transação não encontrada');
+    }
+  } catch (error) {
+    if (error.response) {
+      if (error.response.status === 404) {
+        throw new Error('Transação não encontrada');
+      } else {
+        throw new Error(`Erro no servidor: ${error.response.status}`);
+      }
+    } else if (error.request) {
+      throw new Error('Sem resposta do servidor');
+    } else {
+      throw new Error(`Erro na requisição: ${error.message}`);
+    }
+  }
+}
 
     return (
         <TransactionsContext.Provider
@@ -48,6 +73,7 @@ export function TransactionsProvider({ children }) {
                 loading,
                 addTransaction,
                 deleteTransaction,
+                getTransaction,
             }}
         >
             {children}

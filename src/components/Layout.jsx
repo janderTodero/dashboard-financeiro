@@ -39,7 +39,6 @@ export default function Layout({ children }) {
         )}
       </button>
 
-      {/* Sidebar com animação */}
       <Transition
         as={Fragment}
         show={shouldShowSidebar}
@@ -55,7 +54,6 @@ export default function Layout({ children }) {
         </div>
       </Transition>
 
-      {/* Overlay para mobile */}
       <Transition
         as={Fragment}
         show={isSidebarOpen}
@@ -72,7 +70,6 @@ export default function Layout({ children }) {
         />
       </Transition>
 
-      {/* Conteúdo principal */}
       <main className="flex-1 min-h-screen overflow-auto">
         {children}
       </main>
