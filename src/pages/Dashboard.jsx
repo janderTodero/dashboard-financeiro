@@ -1,5 +1,5 @@
+import { useState, useMemo } from "react";
 import { useTransactions } from "../context/TransactionsContext";
-import useTransactionSummary from "../hooks/useTransactionSummary";
 import LoadingSpinner from "../components/LoadingSpinner";
 import {
   Chart as ChartJS,
@@ -13,8 +13,8 @@ import {
   PointElement,
 } from "chart.js";
 import { Doughnut, Line, Bar } from "react-chartjs-2";
-import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { Eye } from "lucide-react";
 
 ChartJS.register(
   ArcElement,
@@ -27,81 +27,141 @@ ChartJS.register(
   PointElement
 );
 
+const meses = [
+  "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
+  "Jul", "Ago", "Set", "Out", "Nov", "Dez",
+];
+
 export default function Dashboard() {
   const { transactions, loading } = useTransactions();
-  const { entradas, saidas, total } = useTransactionSummary();
+  const navigate = useNavigate();
 
+  // Estado do mês selecionado (padrão mês atual)
+  const dataAtual = new Date();
+  const mesAtual = dataAtual.getMonth();
+  const anoAtual = dataAtual.getFullYear();
 
+  // Vamos armazenar mês e ano para filtrar corretamente, ex: { mes: 3, ano: 2025 }
+  const [mesSelecionado, setMesSelecionado] = useState({ mes: mesAtual, ano: anoAtual });
+
+  // Filtrar transações pelo mês/ano selecionado
+  const transacoesFiltradas = useMemo(() => {
+    if (!transactions) return [];
+    return transactions.filter(t => {
+      const dt = new Date(t.date);
+      return dt.getMonth() === mesSelecionado.mes && dt.getFullYear() === mesSelecionado.ano;
+    });
+  }, [transactions, mesSelecionado]);
+
+  // Calcular entradas, saídas e total com as transações filtradas
+  const entradas = useMemo(() => {
+    return transacoesFiltradas
+      .filter(t => t.type === "income")
+      .reduce((acc, t) => acc + t.amount, 0);
+  }, [transacoesFiltradas]);
+
+  const saidas = useMemo(() => {
+    return transacoesFiltradas
+      .filter(t => t.type === "expense")
+      .reduce((acc, t) => acc + t.amount, 0);
+  }, [transacoesFiltradas]);
+
+  const total = entradas - saidas;
+
+  // Gerar lista de meses disponíveis com base nas transações (para o filtro)
+  const mesesDisponiveis = useMemo(() => {
+    if (!transactions) return [];
+    // Obter combinações únicas de mês e ano ordenadas descendente
+    const combinacoes = transactions.reduce((acc, t) => {
+      const dt = new Date(t.date);
+      const key = `${dt.getFullYear()}-${dt.getMonth()}`;
+      if (!acc.includes(key)) acc.push(key);
+      return acc;
+    }, []);
+    // Ordenar decrescente
+    combinacoes.sort((a, b) => {
+      const [anoA, mesA] = a.split("-").map(Number);
+      const [anoB, mesB] = b.split("-").map(Number);
+      if (anoA !== anoB) return anoB - anoA;
+      return mesB - mesA;
+    });
+    return combinacoes.map(key => {
+      const [ano, mes] = key.split("-").map(Number);
+      return { ano, mes };
+    });
+  }, [transactions]);
+
+  // Dados do gráfico de despesas por categoria (dentro do mês selecionado)
   const categoryData = useMemo(() => {
-    if (!transactions) return null;
-    const expenses = transactions.filter((t) => t.type === "expense");
-
-    const categoriesMap = expenses.reduce((acc, transaction) => {
-      const { category, amount } = transaction;
-      acc[category] = (acc[category] || 0) + amount;
+    if (!transacoesFiltradas || transacoesFiltradas.length === 0) return null;
+    const despesas = transacoesFiltradas.filter(t => t.type === "expense");
+    const categoriasMap = despesas.reduce((acc, t) => {
+      acc[t.category] = (acc[t.category] || 0) + t.amount;
       return acc;
     }, {});
+    const labels = Object.keys(categoriasMap);
+    const data = Object.values(categoriasMap);
 
-    const labels = Object.keys(categoriesMap);
-    const data = Object.values(categoriesMap);
-    const backgroundColors = [
-      "#FF6384",
-      "#36A2EB",
-      "#FFCE56",
-      "#4BC0C0",
-      "#9966FF",
-      "#FF9F40",
-      "#8AC24A",
-      "#607D8B",
-    ];
+    const generateColors = (num) =>
+      Array.from({ length: num }, (_, i) => `hsl(${(i * 360) / num}, 70%, 50%)`);
 
     return {
       labels,
       datasets: [
         {
           data,
-          backgroundColor: backgroundColors.slice(0, labels.length),
+          backgroundColor: generateColors(labels.length),
           borderColor: "#1e1e1e",
           borderWidth: 1,
         },
       ],
     };
-  }, [transactions]);
+  }, [transacoesFiltradas]);
 
+  // Dados do gráfico Entradas vs Saídas (mostrar histórico do ano do mês selecionado)
+  const entradasSaidasData = useMemo(() => {
+    if (!transactions) return null;
+    // Para o ano do mesSelecionado, calcular totais de cada mês
+    const mesesAno = Array(12).fill(0).map((_, i) => ({ entradas: 0, saidas: 0 }));
+
+    transactions.forEach(({ type, amount, date }) => {
+      const dt = new Date(date);
+      if (dt.getFullYear() === mesSelecionado.ano) {
+        const m = dt.getMonth();
+        if (type === "income") mesesAno[m].entradas += amount;
+        else if (type === "expense") mesesAno[m].saidas += amount;
+      }
+    });
+
+    return {
+      labels: meses,
+      datasets: [
+        { label: "Entradas", data: mesesAno.map(m => m.entradas), backgroundColor: "#4BC0C0" },
+        { label: "Saídas", data: mesesAno.map(m => m.saidas), backgroundColor: "#FF6384" },
+      ],
+    };
+  }, [transactions, mesSelecionado]);
+
+  // Dados do gráfico saldo ao longo do ano do mês selecionado
   const saldoData = useMemo(() => {
     if (!transactions) return null;
-
-    const months = [
-      "Jan",
-      "Fev",
-      "Mar",
-      "Abr",
-      "Mai",
-      "Jun",
-      "Jul",
-      "Ago",
-      "Set",
-      "Out",
-      "Nov",
-      "Dez",
-    ];
+    const mesesAno = Array(12).fill(0).map(() => ({ entradas: 0, saidas: 0 }));
+    transactions.forEach(({ type, amount, date }) => {
+      const dt = new Date(date);
+      if (dt.getFullYear() === mesSelecionado.ano) {
+        const m = dt.getMonth();
+        if (type === "income") mesesAno[m].entradas += amount;
+        else if (type === "expense") mesesAno[m].saidas += amount;
+      }
+    });
     let saldoAcumulado = 0;
-    const saldosPorMes = months.map((_, i) => {
-      const monthTransactions = transactions.filter(
-        (t) => new Date(t.date).getMonth() === i
-      );
-      const entradasMes = monthTransactions
-        .filter((t) => t.type === "income")
-        .reduce((a, b) => a + b.amount, 0);
-      const saidasMes = monthTransactions
-        .filter((t) => t.type === "expense")
-        .reduce((a, b) => a + b.amount, 0);
-      saldoAcumulado += entradasMes - saidasMes;
+    const saldosPorMes = mesesAno.map(({ entradas, saidas }) => {
+      saldoAcumulado += entradas - saidas;
       return saldoAcumulado;
     });
 
     return {
-      labels: months,
+      labels: meses,
       datasets: [
         {
           label: "Saldo (R$)",
@@ -112,178 +172,118 @@ export default function Dashboard() {
         },
       ],
     };
-  }, [transactions]);
+  }, [transactions, mesSelecionado]);
 
-  const entradasSaidasData = useMemo(() => {
-    if (!transactions) return null;
-
-    const months = [
-      "Jan",
-      "Fev",
-      "Mar",
-      "Abr",
-      "Mai",
-      "Jun",
-      "Jul",
-      "Ago",
-      "Set",
-      "Out",
-      "Nov",
-      "Dez",
-    ];
-    const entradasMes = months.map((_, i) =>
-      transactions
-        .filter((t) => t.type === "income" && new Date(t.date).getMonth() === i)
-        .reduce((a, b) => a + b.amount, 0)
-    );
-    const saidasMes = months.map((_, i) =>
-      transactions
-        .filter(
-          (t) => t.type === "expense" && new Date(t.date).getMonth() === i
-        )
-        .reduce((a, b) => a + b.amount, 0)
-    );
-
-    return {
-      labels: months,
-      datasets: [
-        { label: "Entradas", data: entradasMes, backgroundColor: "#4BC0C0" },
-        { label: "Saídas", data: saidasMes, backgroundColor: "#FF6384" },
-      ],
-    };
-  }, [transactions]);
-
-  const navigate = useNavigate();
-
-  const topDespesas = useMemo(() => {
-    if (!transactions) return [];
-    const expenses = transactions.filter((t) => t.type === "expense");
-    const categoriesMap = expenses.reduce((acc, t) => {
-      acc[t.category] = (acc[t.category] || 0) + t.amount;
-      return acc;
-    }, {});
-    return Object.entries(categoriesMap)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 3);
-  }, [transactions]);
-
-  const meta = 5000;
-  const progressoMeta = Math.min((total / meta) * 100, 100);
-
+  // Últimas transações do mês selecionado
   const ultimasTransacoes = useMemo(() => {
-    if (!transactions) return [];
-
-    return [...transactions]
+    return [...transacoesFiltradas]
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, 5);
-  }, [transactions]);
+  }, [transacoesFiltradas]);
 
-  if (loading) {
-    return <LoadingSpinner />;
-  }
+  // Configurações de animação para gráficos
+  const chartAnimation = {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: {
+      duration: 1200,
+      easing: "easeOutQuart",
+      delay: (context) => context.dataIndex * 100,
+    },
+    plugins: {
+      legend: {
+        labels: {
+          color: "#e2e8f0",
+          usePointStyle: true,
+          font: { size: 12 },
+        },
+      },
+    },
+  };
+
+  if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="flex flex-col h-screen p-4 md:p-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-700">
-      <h2 className="text-xl md:text-2xl font-bold mb-6 text-white flex-shrink-0">
-        Dashboard
-      </h2>
+    <div className="flex flex-col min-h-screen p-4 md:p-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-700">
+      <h2 className="text-xl md:text-2xl font-bold mb-6 text-white">Dashboard</h2>
 
-      <section className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 text-white">
-        <div className="bg-zinc-900 rounded-xl shadow p-4 flex flex-col justify-center items-center h-28">
-          <h3 className="font-semibold text-base md:text-lg mb-1">Entradas</h3>
-          <p className="text-lg md:text-xl font-bold text-green-500">
-            {entradas}
-          </p>
-        </div>
-        <div className="bg-zinc-900 rounded-xl shadow p-4 flex flex-col justify-center items-center h-28">
-          <h3 className="font-semibold text-base md:text-lg mb-1">Saídas</h3>
-          <p className="text-lg md:text-xl font-bold text-red-600">
-            {saidas}
-          </p>
-        </div>
-        <div className="bg-zinc-900 rounded-xl shadow p-4 flex flex-col justify-center items-center h-28">
-          <h3 className="font-semibold text-base md:text-lg mb-1">Saldo</h3>
-          <p className="text-xl md:text-2xl font-bold text-blue-400">
-            {total}
-          </p>
-        </div>
+      <section className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 text-white items-center">
+        <ResumoCard titulo="Entradas" valor={formatCurrency(entradas)} cor="text-green-500" />
+        <ResumoCard titulo="Saídas" valor={formatCurrency(saidas)} cor="text-red-600" />
+        <ResumoCard titulo="Saldo" valor={formatCurrency(total)} cor="text-blue-400" />
+
+        {/* Filtro mensal */}
         <div className="bg-zinc-900 rounded-xl shadow p-4 flex flex-col justify-center h-28">
-          <h3 className="font-semibold text-base md:text-lg mb-1">
-            Meta de Poupança
-          </h3>
-          <div className="w-full bg-gray-700 rounded-full h-4 mb-2">
-            <div
-              className="bg-green-500 h-4 rounded-full"
-              style={{ width: `${progressoMeta}%` }}
-            ></div>
-          </div>
-          <p className="text-sm">
-            {progressoMeta.toFixed(0)}% da meta atingida
-          </p>
+          <label htmlFor="mes-select" className="mb-2 font-semibold text-white">
+            Selecionar mês
+          </label>
+          <select
+            id="mes-select"
+            className="bg-gray-700 rounded-md p-2 text-white focus:outline-none"
+            value={`${mesSelecionado.ano}-${mesSelecionado.mes}`}
+            onChange={(e) => {
+              const [ano, mes] = e.target.value.split("-").map(Number);
+              setMesSelecionado({ ano, mes });
+            }}
+          >
+            {mesesDisponiveis.map(({ ano, mes }) => (
+              <option key={`${ano}-${mes}`} value={`${ano}-${mes}`}>
+                {meses[mes]} {ano}
+              </option>
+            ))}
+          </select>
         </div>
       </section>
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 overflow-hidden mb-6">
-        <div className="bg-zinc-900 rounded-xl shadow p-4 flex flex-col overflow-hidden">
-          <h3 className="font-semibold text-base md:text-lg mb-2 flex-shrink-0 text-white">
-            Despesas por categoria
-          </h3>
-          <div className="flex-1 min-h-0">
-            {categoryData ? (
-              <Doughnut
-                data={categoryData}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: {
-                    legend: {
-                      position: "bottom",
-                      labels: {
-                        color: "#e2e8f0",
-                        usePointStyle: true,
-                        font: { size: 12 },
-                      },
-                    },
-                  },
-                }}
-              />
-            ) : (
-              <p className="text-gray-500 text-sm md:text-base">
-                Nenhuma despesa registrada
-              </p>
-            )}
-          </div>
-        </div>
+        <ChartCard titulo="Despesas por categoria">
+          {categoryData && categoryData.labels.length > 0 ? (
+            <Doughnut
+              data={categoryData}
+              options={{
+                ...chartAnimation,
+                plugins: {
+                  ...chartAnimation.plugins,
+                  legend: { ...chartAnimation.plugins.legend, position: "bottom" },
+                },
+              }}
+            />
+          ) : (
+            <EmptyMessage>Nenhuma despesa registrada</EmptyMessage>
+          )}
+        </ChartCard>
 
-        <div className="bg-zinc-900 rounded-xl shadow p-4 flex flex-col overflow-hidden">
-          <h3 className="font-semibold text-base md:text-lg mb-2 flex-shrink-0 text-white">
-            Tendência do Saldo
-          </h3>
-          <div className="flex-1 min-h-0">
-            {saldoData && (
-              <Line
-                data={saldoData}
-                options={{ responsive: true, maintainAspectRatio: false }}
-              />
-            )}
-          </div>
-        </div>
+        <ChartCard titulo="Tendência do Saldo">
+          {saldoData && (
+            <Line
+              data={saldoData}
+              options={{
+                ...chartAnimation,
+                elements: {
+                  line: { tension: 0.3 },
+                  point: { radius: 4, hoverRadius: 6 },
+                },
+              }}
+            />
+          )}
+        </ChartCard>
       </section>
 
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-none">
-        <div className="bg-zinc-900 rounded-xl shadow p-4 md:col-span-2 flex flex-col overflow-hidden h-72">
-          <h3 className="font-semibold text-base md:text-lg mb-2 text-white">
-            Entradas vs Saídas
-          </h3>
-          <div className="flex-1 min-h-0">
-            {entradasSaidasData && (
-              <Bar
-                data={entradasSaidasData}
-                options={{ responsive: true, maintainAspectRatio: false }}
-              />
-            )}
-          </div>
-        </div>
+        <ChartCard titulo="Entradas vs Saídas" className="md:col-span-2 h-72">
+          {entradasSaidasData && (
+            <Bar
+              data={entradasSaidasData}
+              options={{
+                ...chartAnimation,
+                scales: {
+                  x: { ticks: { color: "#e2e8f0" } },
+                  y: { ticks: { color: "#e2e8f0" } },
+                },
+              }}
+            />
+          )}
+        </ChartCard>
 
         <div className="bg-zinc-900 rounded-xl shadow p-6 flex flex-col overflow-auto h-72 text-white">
           <h3 className="font-semibold text-lg mb-4 border-b border-zinc-700 pb-2">
@@ -292,10 +292,10 @@ export default function Dashboard() {
           <ul className="text-sm md:text-base space-y-3 overflow-auto">
             {ultimasTransacoes.length > 0 ? (
               ultimasTransacoes.map((t, i) => {
-                const dataFormatada = t.date
+                const dataValida = t.date && !isNaN(new Date(t.date));
+                const dataFormatada = dataValida
                   ? new Date(t.date).toLocaleDateString("pt-BR")
                   : "--/--/----";
-
                 return (
                   <li
                     key={i}
@@ -305,28 +305,23 @@ export default function Dashboard() {
                       <span className="font-medium truncate">
                         {t.description || t.title || "Sem descrição"}
                       </span>
-                      <span className="text-xs text-zinc-400">
-                        {dataFormatada}
-                      </span>
+                      <span className="text-xs text-zinc-400">{dataFormatada}</span>
                     </div>
-
                     <span
                       className={`font-semibold ${
-                        t.type === "income" ? "text-green-400" : "text-red-400"
+                        t.type === "income"
+                          ? "text-green-400"
+                          : "text-red-400"
                       } min-w-[90px] text-right`}
                     >
-                      {t.amount.toLocaleString("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      })}
+                      {formatCurrency(t.amount)}
                     </span>
-
                     <button
                       type="button"
-                      className="ml-4 px-3 py-1 rounded-md bg-indigo-600 hover:bg-indigo-700 transition-colors text-white text-sm font-semibold"
+                      className="cursor-pointer ml-4 px-3 py-1 rounded-md bg-indigo-600 hover:bg-indigo-700 transition-colors text-white text-sm font-semibold flex items-center gap-1"
                       onClick={() => navigate(`/transactions/${t._id}`)}
                     >
-                      Ver
+                      <Eye size={16} /> Ver
                     </button>
                   </li>
                 );
@@ -341,4 +336,38 @@ export default function Dashboard() {
       </section>
     </div>
   );
+}
+
+function ResumoCard({ titulo, valor, cor }) {
+  return (
+    <div className="bg-zinc-900 rounded-xl shadow p-4 flex flex-col justify-center items-center h-28">
+      <h3 className="font-semibold text-base md:text-lg mb-1">{titulo}</h3>
+      <p className={`text-lg md:text-xl font-bold ${cor}`}>{valor}</p>
+    </div>
+  );
+}
+
+function ChartCard({ titulo, children, className = "" }) {
+  return (
+    <div
+      className={`bg-zinc-900 rounded-xl shadow p-4 flex flex-col overflow-hidden ${className}`}
+    >
+      <h3 className="font-semibold text-base md:text-lg mb-2 text-white">
+        {titulo}
+      </h3>
+      <div className="flex-1 min-h-0">{children}</div>
+    </div>
+  );
+}
+
+function EmptyMessage({ children }) {
+  return <p className="text-gray-500 text-sm md:text-base">{children}</p>;
+}
+
+// Função de formatação monetária usada no componente
+function formatCurrency(value) {
+  return value.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
 }

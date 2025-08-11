@@ -30,7 +30,7 @@ export default function Sidebar() {
         </div>
         <div className="flex items-center gap-2">
           <HiMiniArrowPathRoundedSquare className="text-2xl text-purple-400" />
-          <Link to={"/"}>
+          <Link to={"/transactions"}>
             <h3>Gerenciar Transações</h3>
           </Link>
         </div>
