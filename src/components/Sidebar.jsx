@@ -29,17 +29,18 @@ export default function Sidebar() {
           </Link>
         </div>
         <div className="flex items-center gap-2">
-          <FiActivity className="text-2xl text-purple-400" />
-          <Link to={"/"}>
-            <h3>Gráficos</h3>
-          </Link>
-        </div>
-        <div className="flex items-center gap-2">
           <HiMiniArrowPathRoundedSquare className="text-2xl text-purple-400" />
           <Link to={"/"}>
             <h3>Gerenciar Transações</h3>
           </Link>
         </div>
+        <div className="flex items-center gap-2">
+          <FiActivity className="text-2xl text-purple-400" />
+          <Link to={"/"}>
+            <h3>Gráficos</h3>
+          </Link>
+        </div>
+        
         <div className="flex items-center gap-2">
           <BsGear className="text-2xl text-purple-400" />
           <Link to={"/"}>

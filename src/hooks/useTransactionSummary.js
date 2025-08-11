@@ -6,7 +6,7 @@ export default function useTransactionSummary() {
 
     return useMemo(() => {
         if (loading || !Array.isArray(transactions)) {
-            return { entradas: 0, saidas: 0, total: 0 };
+            return { entradas: "R$ 0,00", saidas: "R$ 0,00", total: "R$ 0,00" };
         }
 
         const entradas = transactions
@@ -19,6 +19,16 @@ export default function useTransactionSummary() {
 
         const total = entradas - saidas;
 
-        return { entradas, saidas, total };
+        const formatCurrency = (value) =>
+            new Intl.NumberFormat("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+            }).format(value);
+
+        return {
+            entradas: formatCurrency(entradas),
+            saidas: formatCurrency(saidas),
+            total: formatCurrency(total),
+        };
     }, [transactions, loading]);
 }

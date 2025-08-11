@@ -52,22 +52,22 @@ export default function TransactionDetail() {
         <div className="flex justify-between mb-6">
           <button
             onClick={() => navigate(-1)}
-            className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-700 transition-colors font-semibold focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-zinc-900"
+            className="cursor-pointer px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-700 transition-colors font-semibold focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-zinc-900"
           >
             Voltar
           </button>
 
           <div className="space-x-3">
             <button
-              onClick={() => navigate(`/transaction/edit/${id}`)}
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-colors font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-zinc-900"
+              onClick={() => navigate(`/transactions/edit/${id}`)}
+              className="cursor-pointer px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-colors font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-zinc-900"
             >
               Editar
             </button>
             <button
               onClick={handleDelete}
               disabled={deleting}
-              className={`px-4 py-2 rounded-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 transition-colors font-semibold focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-zinc-900 ${
+              className={`cursor-pointer px-4 py-2 rounded-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 transition-colors font-semibold focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-zinc-900 ${
                 deleting ? "opacity-60 cursor-not-allowed" : ""
               }`}
             >
@@ -101,7 +101,7 @@ export default function TransactionDetail() {
               <strong>Data:</strong> {new Date(detalhe.date).toLocaleDateString("pt-BR")}
             </p>
             <p>
-              <strong>Tipo:</strong> {detalhe.type}
+              <strong>Tipo:</strong> {detalhe.type === 'expense' ? "Saída" : "Entrada"}
             </p>
             {deleteError && <p className="text-red-500 mt-4">{deleteError}</p>}
           </div>

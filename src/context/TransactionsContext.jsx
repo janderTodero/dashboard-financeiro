@@ -32,6 +32,17 @@ export function TransactionsProvider({ children }) {
         }
     }
 
+    async function editTransaction(id, updatedTransaction) {
+      try {
+        const response = await api.put(`/transactions/${id}`, updatedTransaction)
+
+        setTransactions(prev => prev.map(t => t._id === id ? response.data : t));
+        return response;
+      } catch (error) {
+        console.error("Erro ao atualizar transação", error)
+      }
+    }
+
     async function deleteTransaction(id) {
         try {
             await api.delete(`/transactions/${id}`)
@@ -72,6 +83,7 @@ export function TransactionsProvider({ children }) {
                 transactions,
                 loading,
                 addTransaction,
+                editTransaction,
                 deleteTransaction,
                 getTransaction,
             }}

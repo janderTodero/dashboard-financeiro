@@ -9,6 +9,7 @@ import Register from "./pages/Register.jsx";
 import { TransactionsProvider } from "./context/TransactionsContext.jsx";
 import NewTransaction from "./pages/newTransaction.jsx";
 import TransactionDetail from "./pages/TransactionDetail.jsx";
+import EditTransaction from "./pages/EditTransaction.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -21,6 +22,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <Route path="/" element={<Dashboard />} />
             <Route path="/newTransaction" element={<NewTransaction />} />
             <Route path="/transactions/:id" element={<TransactionDetail />} />
+            <Route path="/transactions/edit/:id" element={<EditTransaction />} />
           </Route>
         </Routes>
       </TransactionsProvider>

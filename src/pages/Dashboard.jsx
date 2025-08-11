@@ -31,7 +31,6 @@ export default function Dashboard() {
   const { transactions, loading } = useTransactions();
   const { entradas, saidas, total } = useTransactionSummary();
 
-  console.log(transactions)
 
   const categoryData = useMemo(() => {
     if (!transactions) return null;
@@ -173,10 +172,10 @@ export default function Dashboard() {
 
   const ultimasTransacoes = useMemo(() => {
     if (!transactions) return [];
-    // Ordena pela data decrescente (mais recentes primeiro)
+
     return [...transactions]
       .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .slice(0, 5); // mostra as 5 últimas, por exemplo
+      .slice(0, 5);
   }, [transactions]);
 
   if (loading) {
@@ -193,19 +192,19 @@ export default function Dashboard() {
         <div className="bg-zinc-900 rounded-xl shadow p-4 flex flex-col justify-center items-center h-28">
           <h3 className="font-semibold text-base md:text-lg mb-1">Entradas</h3>
           <p className="text-lg md:text-xl font-bold text-green-500">
-            R$ {entradas}
+            {entradas}
           </p>
         </div>
         <div className="bg-zinc-900 rounded-xl shadow p-4 flex flex-col justify-center items-center h-28">
           <h3 className="font-semibold text-base md:text-lg mb-1">Saídas</h3>
           <p className="text-lg md:text-xl font-bold text-red-600">
-            R$ {saidas}
+            {saidas}
           </p>
         </div>
         <div className="bg-zinc-900 rounded-xl shadow p-4 flex flex-col justify-center items-center h-28">
           <h3 className="font-semibold text-base md:text-lg mb-1">Saldo</h3>
           <p className="text-xl md:text-2xl font-bold text-blue-400">
-            R$ {total}
+            {total}
           </p>
         </div>
         <div className="bg-zinc-900 rounded-xl shadow p-4 flex flex-col justify-center h-28">
