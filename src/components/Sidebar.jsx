@@ -13,7 +13,7 @@ export default function Sidebar() {
   if (!user) return null;
 
   return (
-    <div className="bg-zinc-900 h-screen w-[300px] text-white">
+    <div className="bg-zinc-900 h-full w-[300px] text-white">
       <div className="pt-10 ml-5">
         <h2>
           Bem-vindo,{" "}
@@ -36,8 +36,8 @@ export default function Sidebar() {
         </div>
         <div className="flex items-center gap-2">
           <FiActivity className="text-2xl text-purple-400" />
-          <Link to={"/"}>
-            <h3>Gráficos</h3>
+          <Link to={"/transactions/reports"}>
+            <h3>Relátorio Comparativo</h3>
           </Link>
         </div>
         

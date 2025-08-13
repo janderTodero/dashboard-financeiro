@@ -11,6 +11,7 @@ import NewTransaction from "./pages/newTransaction.jsx";
 import TransactionDetail from "./pages/TransactionDetail.jsx";
 import EditTransaction from "./pages/EditTransaction.jsx";
 import Transactions from "./pages/Transactions.jsx";
+import Reports from "./pages/Reports.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -25,6 +26,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <Route path="/transactions/new" element={<NewTransaction />} />
             <Route path="/transactions/:id" element={<TransactionDetail />} />
             <Route path="/transactions/edit/:id" element={<EditTransaction />} />
+            <Route path="/transactions/reports" element={<Reports />} />
           </Route>
         </Routes>
       </TransactionsProvider>

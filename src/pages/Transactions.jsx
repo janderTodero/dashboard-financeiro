@@ -42,7 +42,7 @@ export default function Transactions() {
     });
   }, [transactions]);
 
-  // Filtrar transações pelo mês e tipo
+
   const transacoesFiltradas = useMemo(() => {
     if (!transactions) return [];
     return transactions.filter(t => {
