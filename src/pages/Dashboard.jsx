@@ -36,15 +36,15 @@ export default function Dashboard() {
   const { transactions, loading } = useTransactions();
   const navigate = useNavigate();
 
-  // Estado do mês selecionado (padrão mês atual)
+ 
   const dataAtual = new Date();
   const mesAtual = dataAtual.getMonth();
   const anoAtual = dataAtual.getFullYear();
 
-  // Vamos armazenar mês e ano para filtrar corretamente, ex: { mes: 3, ano: 2025 }
+ 
   const [mesSelecionado, setMesSelecionado] = useState({ mes: mesAtual, ano: anoAtual });
 
-  // Filtrar transações pelo mês/ano selecionado
+ 
   const transacoesFiltradas = useMemo(() => {
     if (!transactions) return [];
     return transactions.filter(t => {
@@ -53,7 +53,7 @@ export default function Dashboard() {
     });
   }, [transactions, mesSelecionado]);
 
-  // Calcular entradas, saídas e total com as transações filtradas
+ 
   const entradas = useMemo(() => {
     return transacoesFiltradas
       .filter(t => t.type === "income")
@@ -68,17 +68,17 @@ export default function Dashboard() {
 
   const total = entradas - saidas;
 
-  // Gerar lista de meses disponíveis com base nas transações (para o filtro)
+ 
   const mesesDisponiveis = useMemo(() => {
     if (!transactions) return [];
-    // Obter combinações únicas de mês e ano ordenadas descendente
+   
     const combinacoes = transactions.reduce((acc, t) => {
       const dt = new Date(t.date);
       const key = `${dt.getFullYear()}-${dt.getMonth()}`;
       if (!acc.includes(key)) acc.push(key);
       return acc;
     }, []);
-    // Ordenar decrescente
+    
     combinacoes.sort((a, b) => {
       const [anoA, mesA] = a.split("-").map(Number);
       const [anoB, mesB] = b.split("-").map(Number);
@@ -91,7 +91,7 @@ export default function Dashboard() {
     });
   }, [transactions]);
 
-  // Dados do gráfico de despesas por categoria (dentro do mês selecionado)
+  
   const categoryData = useMemo(() => {
     if (!transacoesFiltradas || transacoesFiltradas.length === 0) return null;
     const despesas = transacoesFiltradas.filter(t => t.type === "expense");
@@ -118,10 +118,10 @@ export default function Dashboard() {
     };
   }, [transacoesFiltradas]);
 
-  // Dados do gráfico Entradas vs Saídas (mostrar histórico do ano do mês selecionado)
+ 
   const entradasSaidasData = useMemo(() => {
     if (!transactions) return null;
-    // Para o ano do mesSelecionado, calcular totais de cada mês
+    
     const mesesAno = Array(12).fill(0).map((_, i) => ({ entradas: 0, saidas: 0 }));
 
     transactions.forEach(({ type, amount, date }) => {
@@ -142,7 +142,7 @@ export default function Dashboard() {
     };
   }, [transactions, mesSelecionado]);
 
-  // Dados do gráfico saldo ao longo do ano do mês selecionado
+  
   const saldoData = useMemo(() => {
     if (!transactions) return null;
     const mesesAno = Array(12).fill(0).map(() => ({ entradas: 0, saidas: 0 }));
@@ -174,14 +174,14 @@ export default function Dashboard() {
     };
   }, [transactions, mesSelecionado]);
 
-  // Últimas transações do mês selecionado
+  
   const ultimasTransacoes = useMemo(() => {
     return [...transacoesFiltradas]
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, 5);
   }, [transacoesFiltradas]);
 
-  // Configurações de animação para gráficos
+  
   const chartAnimation = {
     responsive: true,
     maintainAspectRatio: false,
@@ -212,7 +212,7 @@ export default function Dashboard() {
         <ResumoCard titulo="Saídas" valor={formatCurrency(saidas)} cor="text-red-600" />
         <ResumoCard titulo="Saldo" valor={formatCurrency(total)} cor="text-blue-400" />
 
-        {/* Filtro mensal */}
+       
         <div className="bg-zinc-900 rounded-xl shadow p-4 flex flex-col justify-center h-28">
           <label htmlFor="mes-select" className="mb-2 font-semibold text-white">
             Selecionar mês
@@ -364,7 +364,7 @@ function EmptyMessage({ children }) {
   return <p className="text-gray-500 text-sm md:text-base">{children}</p>;
 }
 
-// Função de formatação monetária usada no componente
+
 function formatCurrency(value) {
   return value.toLocaleString("pt-BR", {
     style: "currency",

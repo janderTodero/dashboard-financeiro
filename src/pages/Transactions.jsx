@@ -77,7 +77,7 @@ export default function Transactions() {
       </header>
 
       <section className="flex flex-col md:flex-row gap-4 mb-6 text-white">
-        {/* Filtro mês */}
+        
         <div>
           <label htmlFor="mes-select" className="block mb-1 font-semibold">
             Filtrar por mês
@@ -117,7 +117,7 @@ export default function Transactions() {
         </div>
       </section>
 
-      {/* Tabela responsiva para mobile */}
+     
 <div className="bg-zinc-900 rounded-xl shadow p-4 flex-1 overflow-auto text-white">
   {transacoesFiltradas.length === 0 ? (
     <p className="text-center text-gray-400 mt-6">Nenhuma transação encontrada.</p>

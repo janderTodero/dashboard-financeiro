@@ -6,6 +6,7 @@ import { HiMiniArrowPathRoundedSquare } from "react-icons/hi2";
 import { BsGear } from "react-icons/bs";
 import { TbLogout2 } from "react-icons/tb";
 import { Link } from "react-router-dom";
+import { CiCirclePlus } from "react-icons/ci";
 
 export default function Sidebar() {
   const { user, logout } = useContext(AuthContext);
@@ -21,7 +22,14 @@ export default function Sidebar() {
         </h2>
       </div>
 
+      
       <div className="flex flex-col gap-4 mt-12 ml-5">
+        <div className="flex items-center gap-2">
+          <CiCirclePlus className="text-2xl text-purple-400" />
+          <Link to={"/transactions/new"}>
+            <h3>Nova Transação</h3>
+          </Link>
+        </div>
         <div className="flex items-center gap-2">
           <FiBarChart2 className="text-2xl text-purple-400" />
           <Link to={"/"}>
@@ -41,12 +49,7 @@ export default function Sidebar() {
           </Link>
         </div>
         
-        <div className="flex items-center gap-2">
-          <BsGear className="text-2xl text-purple-400" />
-          <Link to={"/"}>
-            <h3>Configurações</h3>
-          </Link>
-        </div>
+        
         <div className="flex items-center gap-2">
           <TbLogout2 className="text-2xl text-purple-400" />
           <button onClick={logout} className="cursor-pointer">

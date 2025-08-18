@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { AuthContext } from "../context/authContext";
 import { FiDollarSign, FiType, FiList, FiSave } from "react-icons/fi";
+import { useTransactions } from "../context/TransactionsContext";
 
 export default function NewTransaction() {
   const { user } = useContext(AuthContext);
@@ -15,6 +16,8 @@ export default function NewTransaction() {
   const [successMessage, setSuccessMessage] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestedCategories, setSuggestedCategories] = useState([]);
+  const { addTransaction } = useTransactions();
+
 
   const categoryMap = {
     income: [
@@ -77,9 +80,10 @@ export default function NewTransaction() {
         user: user.id
       };
 
-      const response = await api.post("/transactions", transactionData);
+      const response = addTransaction(transactionData)
+    
 
-      if (response.status === 201) {
+      if (response) {
         setSuccessMessage("Transação criada com sucesso!");
         
         setTitle("");
