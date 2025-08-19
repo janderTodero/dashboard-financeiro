@@ -1,12 +1,55 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import api from "../services/api";
 
-export default function LimiteGastosCard({ limite, saidas, onChangeLimite }) {
+export default function LimiteGastosCard({ saidas }) {
+  const [limite, setLimite] = useState();
   const [editando, setEditando] = useState(false);
-  const [novoLimite, setNovoLimite] = useState(limite || "");
+  const [novoLimite, setNovoLimite] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  // Buscar limite quando montar
+  useEffect(() => {
+    async function fetchLimite() {
+      setLoading(true);
+      try {
+        const res = await api.get("/limit/");
+        setLimite(res.data.limit?.limit ?? null);
+        setNovoLimite(res.data.limit?.limit ?? "");
+      } catch {
+        setLimite(null);
+        setNovoLimite("");
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchLimite();
+  }, []);
+
+
+  // Salvar/atualizar limite
+  async function handleSalvar(e) {
+    e.preventDefault();
+    try {
+      const method = limite === undefined || limite === null ? "post" : "put";
+      const res = await api[method]("/limit/", { limit: Number(novoLimite) });
+      setLimite(res.data.limit.limit);
+      setEditando(false);
+    } catch {
+      alert("Erro ao salvar limite");
+    }
+  }
 
   const semLimite = limite === undefined || limite === null || limite === 0;
 
-  // Se limite não está definido, só mostra o campo para definir limite
+  if (loading) {
+    return (
+      <div className="bg-zinc-900 rounded-xl shadow p-4 mb-6 flex flex-col items-center">
+        <span className="font-semibold text-white">Limite de gastos</span>
+        <span className="text-zinc-300 mt-2">Carregando...</span>
+      </div>
+    );
+  }
+
   if (semLimite && !editando) {
     return (
       <div className="bg-zinc-900 rounded-xl shadow p-4 mb-6 flex flex-col items-center">
@@ -21,11 +64,7 @@ export default function LimiteGastosCard({ limite, saidas, onChangeLimite }) {
         </button>
         {editando && (
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              setEditando(false);
-              if (onChangeLimite) onChangeLimite(Number(novoLimite));
-            }}
+            onSubmit={handleSalvar}
             className="flex flex-col items-center gap-2 mt-3 w-full"
           >
             <input
@@ -61,14 +100,8 @@ export default function LimiteGastosCard({ limite, saidas, onChangeLimite }) {
 
   // Exibição normal se já existe limite
   const restante = limite - saidas;
-  const percentual = Math.max(0, Math.min(100, (saidas / limite) * 100));
+  const percentual = limite ? Math.max(0, Math.min(100, (saidas / limite) * 100)) : 0;
   const excedeu = saidas > limite;
-
-  function handleSalvar(e) {
-    e.preventDefault();
-    setEditando(false);
-    if (onChangeLimite) onChangeLimite(Number(novoLimite));
-  }
 
   return (
     <div className="bg-zinc-900 rounded-xl shadow p-4 mb-6 flex flex-col items-center">
@@ -83,7 +116,7 @@ export default function LimiteGastosCard({ limite, saidas, onChangeLimite }) {
       </div>
       <div className="flex justify-between items-center w-full text-xs text-zinc-300 gap-2">
         <span>
-          saidas:{" "}
+          saídas:{" "}
           {saidas.toLocaleString("pt-BR", {
             style: "currency",
             currency: "BRL",
