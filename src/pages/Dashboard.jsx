@@ -12,19 +12,21 @@ import {
   LineElement,
   PointElement,
 } from "chart.js";
-import { Doughnut, Line, Bar } from "react-chartjs-2";
 import { useNavigate } from "react-router-dom";
 import ResumoCard from "../components/ResumoCard";
 import SeletorMes from "../components/SeletorMes";
 import UltimasTransacoes from "../components/UltimasTransacoes";
 import formatCurrency from "../utils/format";
 import ChartCard from "../components/ChartCard";
-import EmptyMessage from "../components/EmptyMesage";
 
 import useResumo from "../hooks/useResumo";
 import useCategoryData from "../hooks/useCategoryData";
 import useEntradasSaidasData from "../hooks/useEntradasSaidasData";
 import useSaldoData from "../hooks/useSaldoData";
+import DespesasPorCategoriaChart from "../components/DespesasPorCategoriaChart";
+import TendenciaSaldoChart from "../components/TendenciaSaldoChart";
+import EntradasSaidasChart from "../components/EntradasSaidasChart";
+import { barOptions, doughnutOptions, lineOptions } from "../utils/chartOptions";
 
 ChartJS.register(
   ArcElement,
@@ -55,7 +57,6 @@ export default function Dashboard() {
     ano: anoAtual,
   });
 
-  // 🔹 Filtra transações do mês/ano selecionado
   const transacoesFiltradas = useMemo(() => {
     if (!transactions) return [];
     return transactions.filter((t) => {
@@ -67,13 +68,11 @@ export default function Dashboard() {
     });
   }, [transactions, mesSelecionado]);
 
-  // 🔹 Hooks que encapsulam a lógica
   const { entradas, saidas, total } = useResumo(transacoesFiltradas);
   const categoryData = useCategoryData(transacoesFiltradas);
   const entradasSaidasData = useEntradasSaidasData(transactions, mesSelecionado);
   const saldoData = useSaldoData(transactions, mesSelecionado);
 
-  // 🔹 Meses disponíveis para seleção
   const mesesDisponiveis = useMemo(() => {
     if (!transactions) return [];
     const combinacoes = transactions.reduce((acc, t) => {
@@ -96,32 +95,11 @@ export default function Dashboard() {
     });
   }, [transactions]);
 
-  // 🔹 Últimas transações
   const ultimasTransacoes = useMemo(() => {
     return [...transacoesFiltradas]
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, 5);
   }, [transacoesFiltradas]);
-
-  // 🔹 Configuração padrão dos gráficos
-  const chartAnimation = {
-    responsive: true,
-    maintainAspectRatio: false,
-    animation: {
-      duration: 1200,
-      easing: "easeOutQuart",
-      delay: (context) => context.dataIndex * 100,
-    },
-    plugins: {
-      legend: {
-        labels: {
-          color: "#e2e8f0",
-          usePointStyle: true,
-          font: { size: 12 },
-        },
-      },
-    },
-  };
 
   if (loading) return <LoadingSpinner />;
 
@@ -131,7 +109,6 @@ export default function Dashboard() {
         Dashboard
       </h2>
 
-      {/* Resumo e seletor de mês */}
       <section className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 text-white items-center">
         <ResumoCard
           titulo="Entradas"
@@ -156,59 +133,19 @@ export default function Dashboard() {
         />
       </section>
 
-      {/* Gráficos principais */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 overflow-hidden mb-6">
         <ChartCard titulo="Despesas por categoria">
-          {categoryData && categoryData.labels.length > 0 ? (
-            <Doughnut
-              data={categoryData}
-              options={{
-                ...chartAnimation,
-                plugins: {
-                  ...chartAnimation.plugins,
-                  legend: {
-                    ...chartAnimation.plugins.legend,
-                    position: "bottom",
-                  },
-                },
-              }}
-            />
-          ) : (
-            <EmptyMessage>Nenhuma despesa registrada</EmptyMessage>
-          )}
+          <DespesasPorCategoriaChart data={categoryData} options={doughnutOptions} />
         </ChartCard>
 
         <ChartCard titulo="Tendência do Saldo">
-          {saldoData && (
-            <Line
-              data={saldoData}
-              options={{
-                ...chartAnimation,
-                elements: {
-                  line: { tension: 0.3 },
-                  point: { radius: 4, hoverRadius: 6 },
-                },
-              }}
-            />
-          )}
+          <TendenciaSaldoChart data={saldoData} options={lineOptions} />
         </ChartCard>
       </section>
 
-      {/* Entradas vs Saídas + últimas transações */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-none">
         <ChartCard titulo="Entradas vs Saídas" className="md:col-span-2 h-72">
-          {entradasSaidasData && (
-            <Bar
-              data={entradasSaidasData}
-              options={{
-                ...chartAnimation,
-                scales: {
-                  x: { ticks: { color: "#e2e8f0" } },
-                  y: { ticks: { color: "#e2e8f0" } },
-                },
-              }}
-            />
-          )}
+            <EntradasSaidasChart data={entradasSaidasData} options={barOptions} />
         </ChartCard>
 
         <UltimasTransacoes
