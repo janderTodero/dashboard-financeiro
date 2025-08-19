@@ -81,8 +81,7 @@ export default function NewTransaction() {
       };
 
       const response = addTransaction(transactionData)
-    
-
+  
       if (response) {
         setSuccessMessage("Transação criada com sucesso!");
         

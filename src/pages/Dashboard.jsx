@@ -27,6 +27,7 @@ import DespesasPorCategoriaChart from "../components/DespesasPorCategoriaChart";
 import TendenciaSaldoChart from "../components/TendenciaSaldoChart";
 import EntradasSaidasChart from "../components/EntradasSaidasChart";
 import { barOptions, doughnutOptions, lineOptions } from "../utils/chartOptions";
+import LimiteGastosCard from "../components/LimiteGastosCard";
 
 ChartJS.register(
   ArcElement,
@@ -47,6 +48,7 @@ const meses = [
 export default function Dashboard() {
   const { transactions, loading } = useTransactions();
   const navigate = useNavigate();
+  const [limite, setLimite ] = useState(0)
 
   const dataAtual = new Date();
   const mesAtual = dataAtual.getMonth();
@@ -132,6 +134,12 @@ export default function Dashboard() {
           meses={meses}
         />
       </section>
+
+      <LimiteGastosCard
+        limite={limite}
+        saidas={saidas}
+        onChangeLimite={setLimite}
+      />
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 overflow-hidden mb-6">
         <ChartCard titulo="Despesas por categoria">
