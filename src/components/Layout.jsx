@@ -27,7 +27,7 @@ export default function Layout({ children }) {
   };
 
   return (
-    <div className="flex max-h-screen">
+    <div className="flex max-h-screen sm:min-h-[100dvh]">
       {/* Botão de menu mobile */}
       <button 
         className="md:hidden fixed top-4 right-4 z-50 p-2 bg-zinc-800 rounded-lg text-white shadow-lg"
