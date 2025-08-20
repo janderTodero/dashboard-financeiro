@@ -1,4 +1,3 @@
-// components/Layout.jsx
 import { useState, useEffect, Fragment } from 'react';
 import { Transition } from '@headlessui/react';
 import Sidebar from './Sidebar';
@@ -20,6 +19,12 @@ export default function Layout({ children }) {
   }, [isSidebarOpen]);
 
   const shouldShowSidebar = isSidebarOpen || windowWidth >= 768;
+
+  const handleSidebarNavigate = () => {
+    if (window.innerWidth < 768) {
+      setIsSidebarOpen(false);
+    }
+  };
 
   return (
     <div className="flex max-h-screen">
@@ -50,7 +55,7 @@ export default function Layout({ children }) {
         leaveTo="-translate-x-full"
       >
         <div className="fixed md:static z-40 w-[300px] h-screen">
-          <Sidebar />
+          <Sidebar onNavigate={handleSidebarNavigate} />
         </div>
       </Transition>
 
