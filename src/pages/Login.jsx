@@ -20,7 +20,7 @@ export default function Login() {
 
     try {
       const response = await api.post("/auth/login", { email, password });
-      const { token, user } = response.data;
+      const { token } = response.data;
 
       login(token, response.data.user);
       navigate("/");

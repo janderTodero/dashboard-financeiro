@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { FiUser, FiMail, FiLock } from "react-icons/fi";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Register() {
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext)
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -31,10 +33,12 @@ export default function Register() {
         email,
         password
       });
+      const token = response.data
       
       if (response.status === 201) {
         setSuccessMessage("Conta criada com sucesso! Redirecionando...");
         setTimeout(() => {
+          login(token, response.data.user)
           navigate("/");
           window.location.reload()
         }, 2000);
