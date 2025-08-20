@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { AuthContext } from "../context/authContext";
+import { AuthContext } from "../context/AuthContext";
 import { FiBarChart2 } from "react-icons/fi";
 import { FiActivity } from "react-icons/fi";
 import { HiMiniArrowPathRoundedSquare } from "react-icons/hi2";
