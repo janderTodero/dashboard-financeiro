@@ -22,7 +22,7 @@ export default function Layout({ children }) {
   const shouldShowSidebar = isSidebarOpen || windowWidth >= 768;
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex max-h-screen">
       {/* Botão de menu mobile */}
       <button 
         className="md:hidden fixed top-4 right-4 z-50 p-2 bg-zinc-800 rounded-lg text-white shadow-lg"

@@ -7,7 +7,6 @@ export default function LimiteGastosCard({ saidas }) {
   const [novoLimite, setNovoLimite] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // Buscar limite quando montar
   useEffect(() => {
     async function fetchLimite() {
       setLoading(true);
@@ -25,8 +24,6 @@ export default function LimiteGastosCard({ saidas }) {
     fetchLimite();
   }, []);
 
-
-  // Salvar/atualizar limite
   async function handleSalvar(e) {
     e.preventDefault();
     try {
@@ -57,7 +54,7 @@ export default function LimiteGastosCard({ saidas }) {
         <span className="text-zinc-300 mb-2">Nenhum limite definido.</span>
         <button
           type="button"
-          className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition text-sm font-semibold"
+          className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition text-sm font-semibold cursor-pointer"
           onClick={() => setEditando(true)}
         >
           Definir Limite
@@ -80,13 +77,13 @@ export default function LimiteGastosCard({ saidas }) {
             <div className="flex gap-2">
               <button
                 type="submit"
-                className="px-2 py-1 rounded bg-green-600 text-white hover:bg-green-700 transition text-xs"
+                className="px-2 cursor-pointer py-1 rounded bg-green-600 text-white hover:bg-green-700 transition text-xs"
               >
                 Salvar
               </button>
               <button
                 type="button"
-                className="px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700 transition text-xs"
+                className="px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700 transition text-xs cursor-pointer"
                 onClick={() => setEditando(false)}
               >
                 Cancelar
@@ -114,18 +111,18 @@ export default function LimiteGastosCard({ saidas }) {
           style={{ width: `${percentual > 100 ? 100 : percentual}%` }}
         />
       </div>
-      <div className="flex justify-between items-center w-full text-xs text-zinc-300 gap-2">
-        <span>
+      <div className="flex flex-col sm:flex-row sm:justify-between items-center w-full text-xs text-zinc-300 gap-2 sm:gap-4">
+        <span className="break-words w-full sm:w-auto text-center sm:text-left">
           saídas:{" "}
           {saidas.toLocaleString("pt-BR", {
             style: "currency",
             currency: "BRL",
           })}
         </span>
-        <span className="flex items-center gap-2">
+        <span className="flex flex-col sm:flex-row items-center gap-2 sm:gap-2 w-full sm:w-auto text-center sm:text-left">
           Limite:
           {editando ? (
-            <form onSubmit={handleSalvar} className="flex items-center gap-1">
+            <form onSubmit={handleSalvar} className="flex flex-col sm:flex-row items-center gap-1">
               <input
                 type="number"
                 min={0}
@@ -135,21 +132,23 @@ export default function LimiteGastosCard({ saidas }) {
                 className="w-20 rounded px-1 py-0.5 text-white placeholder-zinc-400"
                 autoFocus
               />
-              <button
-                type="submit"
-                className="ml-1 px-2 py-1 rounded bg-green-600 text-white hover:bg-green-700 transition text-xs"
-                title="Salvar"
-              >
-                Salvar
-              </button>
-              <button
-                type="button"
-                className="ml-1 px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700 transition text-xs"
-                onClick={() => setEditando(false)}
-                title="Cancelar"
-              >
-                Cancelar
-              </button>
+              <div className="flex gap-2 mt-2 sm:mt-0">
+                <button
+                  type="submit"
+                  className="px-2 py-1 rounded bg-green-600 text-white hover:bg-green-700 transition text-xs cursor-pointer"
+                  title="Salvar"
+                >
+                  Salvar
+                </button>
+                <button
+                  type="button"
+                  className="px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700 transition text-xs cursor-pointer"
+                  onClick={() => setEditando(false)}
+                  title="Cancelar"
+                >
+                  Cancelar
+                </button>
+              </div>
             </form>
           ) : (
             <>
@@ -161,7 +160,7 @@ export default function LimiteGastosCard({ saidas }) {
               </span>
               <button
                 type="button"
-                className="ml-2 px-2 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition text-xs font-semibold"
+                className="ml-2 px-2 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition text-xs font-semibold cursor-pointer"
                 onClick={() => {
                   setNovoLimite(limite);
                   setEditando(true);
@@ -173,7 +172,7 @@ export default function LimiteGastosCard({ saidas }) {
             </>
           )}
         </span>
-        <span className={restante < 0 ? "text-red-400" : "text-green-400"}>
+        <span className={`break-words w-full sm:w-auto text-center sm:text-right ${restante < 0 ? "text-red-400" : "text-green-400"}`}>
           {restante < 0
             ? `-${(saidas - limite).toLocaleString("pt-BR", {
                 style: "currency",

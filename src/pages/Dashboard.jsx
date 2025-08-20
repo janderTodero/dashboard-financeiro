@@ -48,7 +48,7 @@ const meses = [
 export default function Dashboard() {
   const { transactions, loading } = useTransactions();
   const navigate = useNavigate();
-  const [limite, setLimite ] = useState(0)
+  const [limite, setLimite ] = useState()
 
   const dataAtual = new Date();
   const mesAtual = dataAtual.getMonth();
@@ -107,7 +107,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col min-h-screen p-4 md:p-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-700">
-      <h2 className="text-xl md:text-2xl font-bold mb-6 text-white">
+      <h2 className="text-xl md:text-2xl font-bold mb-3 text-white">
         Dashboard
       </h2>
 

@@ -3,7 +3,6 @@ import { AuthContext } from "../context/authContext";
 import { FiBarChart2 } from "react-icons/fi";
 import { FiActivity } from "react-icons/fi";
 import { HiMiniArrowPathRoundedSquare } from "react-icons/hi2";
-import { BsGear } from "react-icons/bs";
 import { TbLogout2 } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import { CiCirclePlus } from "react-icons/ci";
