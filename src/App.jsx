@@ -6,7 +6,7 @@ import Layout from "./components/Layout";
 export default function App() {
   return (
     <PrivateRoute>
-      <div className="app">
+      <div className="app min-h-[100dvh]">
         <Layout>
           <Outlet />
         </Layout>
