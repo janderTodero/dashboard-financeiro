@@ -106,7 +106,7 @@ export default function Dashboard() {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="flex flex-col min-h-screen lg:max-h-screen p-4 md:p-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-700">
+    <div className="flex flex-col min-h-screen lg:max-h-screen p-4 md:p-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-700 sm:min-h-[100dvh]">
       <h2 className="text-xl md:text-2xl font-bold mb-3 text-white">
         PersonalFin
       </h2>
