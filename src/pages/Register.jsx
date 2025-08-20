@@ -33,7 +33,7 @@ export default function Register() {
         email,
         password
       });
-      const token = response.data
+      const { token } = response.data
       
       if (response.status === 201) {
         setSuccessMessage("Conta criada com sucesso! Redirecionando...");
