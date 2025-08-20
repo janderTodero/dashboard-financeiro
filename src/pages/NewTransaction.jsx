@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContex";
+import { AuthContext } from "../context/AuthContext";
 import { FiDollarSign, FiType, FiList, FiSave } from "react-icons/fi";
 import { useTransactions } from "../context/TransactionsContext";
 
