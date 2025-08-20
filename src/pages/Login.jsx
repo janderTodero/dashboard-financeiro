@@ -24,6 +24,7 @@ export default function Login() {
 
       login(token, response.data.user);
       navigate("/");
+      window.location.reload();
     } catch (error) {
       console.error(error);
       setError("Email ou senha inválidos.");
