@@ -108,7 +108,7 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col min-h-screen p-4 md:p-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-700">
       <h2 className="text-xl md:text-2xl font-bold mb-3 text-white">
-        Dashboard
+        PersonalFin
       </h2>
 
       <section className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 text-white items-center">
