@@ -12,7 +12,6 @@ export default function Sidebar({ onNavigate }) {
 
   if (!user) return null;
 
-  // Handler do logout que fecha a sidebar e faz logout
   const handleLogout = () => {
     logout();
     if (onNavigate) onNavigate();
