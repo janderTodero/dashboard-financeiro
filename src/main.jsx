@@ -7,7 +7,7 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import { TransactionsProvider } from "./context/TransactionsContext.jsx";
-import NewTransaction from "./pages/newTransaction.jsx";
+import NewTransaction from "./pages/NewTransaction.jsx";
 import TransactionDetail from "./pages/TransactionDetail.jsx";
 import EditTransaction from "./pages/EditTransaction.jsx";
 import Transactions from "./pages/Transactions.jsx";
