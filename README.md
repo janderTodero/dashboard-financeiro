@@ -1,12 +1,75 @@
-# React + Vite
+# PersonalFin
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação fullstack para controle de finanças pessoais, desenvolvida para facilitar o gerenciamento de receitas e despesas de forma simples, segura e intuitiva.
 
-Currently, two official plugins are available:
+## 🚀 Funcionalidades
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Cadastro, listagem e visualização de transações financeiras (entradas e saídas)
+- Autenticação de usuários via JWT
+- Dashboard com resumo financeiro e filtros por período
+- Integração com banco de dados MongoDB
+- Interface moderna e responsiva
+- Segurança dos dados do usuário
 
-## Expanding the ESLint configuration
+## 🛠️ Tecnologias Utilizadas
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Frontend:** React, Vite, JavaScript, CSS
+- **Backend:** Node.js, Express.js, JWT para autenticação, MongoDB (Mongoose) para persistência de dados
+- **API:** RESTful
+
+## 📦 Instalação
+
+### Pré-requisitos
+
+- Node.js (v16+)
+- npm ou yarn
+- MongoDB
+
+### Backend
+
+```bash
+cd backend
+npm install
+# Configure as variáveis de ambiente em .env (exemplo disponível em .env.example)
+npm run dev
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+## ⚙️ Configuração
+
+1. Crie um arquivo `.env` na raiz do backend com as seguintes variáveis:
+
+    ```
+    MONGODB_URI=mongodb://localhost:27017/personalfin
+    JWT_SECRET=sua_senha_secreta
+    ```
+
+2. Ajuste as URLs de API no frontend caso necessário (`src/services/api.js`).
+
+## 📊 Como Usar
+
+1. Crie sua conta ou faça login.
+2. Cadastre suas entradas e saídas financeiras.
+3. Visualize o resumo financeiro em tempo real no dashboard.
+4. Utilize os filtros para analisar suas finanças em diferentes períodos.
+
+## 🛡️ Segurança
+
+- Autenticação baseada em JWT
+- Validação de dados no backend
+- Senhas armazenadas de forma segura
+
+## 📄 Licença
+
+Este projeto está licenciado sob a licença MIT.
+
+---
+
+> Desenvolvido por Jander Todero (https://github.com/janderTodero)
