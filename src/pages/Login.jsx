@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { FiMail, FiLock } from "react-icons/fi";
 
@@ -24,7 +24,7 @@ export default function Login() {
 
       login(token, response.data.user);
       navigate("/");
-      window.location.reload();
+      window.location.reload()
     } catch (error) {
       console.error(error);
       setError("Email ou senha inválidos.");
@@ -97,12 +97,11 @@ export default function Login() {
         <div className="mt-8 text-center text-gray-400">
           <p>
             Não tem uma conta?{" "}
-            <a
-              href="/register"
-              className="text-purple-400 hover:text-purple-300 font-medium transition-colors"
-            >
+            <Link to={"/register"}>
+            <a className="text-purple-400 hover:text-purple-300 font-medium transition-colors">
               Registre-se
             </a>
+            </Link>
           </p>
         </div>
       </div>
