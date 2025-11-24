@@ -51,6 +51,12 @@ export default function Sidebar({ onNavigate }) {
             <h3>Relátorio Comparativo</h3>
           </Link>
         </div>
+        <div className="flex items-center gap-2">
+          <FiActivity className="text-2xl text-purple-400" />
+          <Link to={"/transactions/import"} onClick={onNavigate}>
+            <h3>Importar transações via CSV</h3>
+          </Link>
+        </div>
 
         <div className="flex items-center gap-2">
           <TbLogout2 className="text-2xl text-purple-400" />
