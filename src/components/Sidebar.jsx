@@ -6,6 +6,7 @@ import { HiMiniArrowPathRoundedSquare } from "react-icons/hi2";
 import { TbLogout2 } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import { CiCirclePlus } from "react-icons/ci";
+import { UploadCloud } from "lucide-react";
 
 export default function Sidebar({ onNavigate }) {
   const { user, logout } = useContext(AuthContext);
@@ -52,9 +53,9 @@ export default function Sidebar({ onNavigate }) {
           </Link>
         </div>
         <div className="flex items-center gap-2">
-          <FiActivity className="text-2xl text-purple-400" />
+          <UploadCloud className="text-2xl text-purple-400" />
           <Link to={"/transactions/import"} onClick={onNavigate}>
-            <h3>Importar transações via CSV</h3>
+            <h3>Importar fatura via CSV</h3>
           </Link>
         </div>
 
