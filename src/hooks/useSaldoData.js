@@ -48,5 +48,5 @@ export default function useSaldoData(transactions, mesSelecionado, closingDay = 
         },
       ],
     };
-  }, [transactions, mesSelecionado]);
+  }, [transactions, mesSelecionado, closingDay]);
 }

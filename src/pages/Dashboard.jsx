@@ -65,6 +65,19 @@ export default function Dashboard() {
     return transactions.filter((t) => {
       const dt = parseDate(t.date);
 
+      // Determine Cycle Year for the transaction
+      let cycleYear = dt.getFullYear();
+      if (closingDay < 30 && dt.getDate() > closingDay) {
+        if (dt.getMonth() === 11) {
+          cycleYear++;
+        }
+      }
+
+      // If "Total Year" is selected (mes === -1)
+      if (mesSelecionado.mes === -1) {
+        return cycleYear === mesSelecionado.ano;
+      }
+
       // If standard calendar month (closing day >= 30)
       if (closingDay >= 30) {
         return (
@@ -115,20 +128,29 @@ export default function Dashboard() {
         }
       }
 
-      const key = `${cycleYear}-${cycleMonth}`;
+      const key = `${cycleYear}|${cycleMonth}`;
       if (!acc.includes(key)) acc.push(key);
+
+      // Also ensure we have a "Total" entry for this year
+      const yearKey = `${cycleYear}|-1`; // -1 for Total
+      if (!acc.includes(yearKey)) acc.push(yearKey);
+
       return acc;
     }, []);
 
     combinacoes.sort((a, b) => {
-      const [anoA, mesA] = a.split("-").map(Number);
-      const [anoB, mesB] = b.split("-").map(Number);
+      const [anoA, mesA] = a.split("|").map(Number);
+      const [anoB, mesB] = b.split("|").map(Number);
       if (anoA !== anoB) return anoB - anoA;
+
+      if (mesA === -1) return -1; // Total at bottom
+      if (mesB === -1) return 1;
+
       return mesB - mesA;
     });
 
     return combinacoes.map((key) => {
-      const [ano, mes] = key.split("-").map(Number);
+      const [ano, mes] = key.split("|").map(Number);
       return { ano, mes };
     });
   }, [transactions, closingDay]);

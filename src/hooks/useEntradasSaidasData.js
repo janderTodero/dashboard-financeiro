@@ -61,5 +61,5 @@ export default function useEntradasSaidasData(transactions, mesSelecionado, clos
         },
       ],
     };
-  }, [transactions, mesSelecionado]);
+  }, [transactions, mesSelecionado, closingDay]);
 }

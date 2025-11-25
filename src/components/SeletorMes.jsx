@@ -13,10 +13,11 @@ export default function SeletorMes({
 
   // Calculate cycle period for display
   const getCyclePeriod = () => {
+    if (mesSelecionado.mes === -1) return "(Ano Completo)";
     if (closingDay >= 30) return ""; // Standard month
 
-    const currentMonth = new Date(mesSelecionado.ano, meses[mesSelecionado.mes], closingDay);
-    const prevMonth = new Date(mesSelecionado.ano, meses[mesSelecionado.mes] - 1, closingDay + 1);
+    const currentMonth = new Date(mesSelecionado.ano, mesSelecionado.mes, closingDay);
+    const prevMonth = new Date(mesSelecionado.ano, mesSelecionado.mes - 1, closingDay + 1);
 
     return `(${prevMonth.getDate()}/${meses[prevMonth.getMonth()]} - ${currentMonth.getDate()}/${meses[currentMonth.getMonth()]})`;
   };
@@ -30,15 +31,15 @@ export default function SeletorMes({
         <select
           id="mes-select"
           className="bg-gray-700 rounded-md p-2 text-white focus:outline-none text-sm"
-          value={`${mesSelecionado.ano}-${mesSelecionado.mes}`}
+          value={`${mesSelecionado.ano}|${mesSelecionado.mes}`}
           onChange={(e) => {
-            const [ano, mes] = e.target.value.split("-").map(Number);
+            const [ano, mes] = e.target.value.split("|").map(Number);
             setMesSelecionado({ ano, mes });
           }}
         >
           {mesesDisponiveis.map(({ ano, mes }) => (
-            <option key={`${ano}-${mes}`} value={`${ano}-${mes}`}>
-              {meses[mes]} {ano}
+            <option key={`${ano}|${mes}`} value={`${ano}|${mes}`}>
+              {mes === -1 ? `Total de ${ano}` : `${meses[mes]} ${ano}`}
             </option>
           ))}
         </select>
