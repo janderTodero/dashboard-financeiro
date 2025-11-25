@@ -8,7 +8,7 @@ export default function NewTransaction() {
   const { user } = useContext(AuthContext);
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
-  const [type, setType] = useState("entrada");
+  const [type, setType] = useState("income");
   const [category, setCategory] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -52,12 +52,12 @@ export default function NewTransaction() {
     e.preventDefault();
     setError("");
     setSuccessMessage("");
-    
+
     if (!title || !amount || !category) {
       setError("Preencha todos os campos obrigatórios.");
       return;
     }
-    
+
     const amountValue = parseFloat(amount);
     if (isNaN(amountValue) || amountValue <= 0) {
       setError("O valor deve ser um número maior que zero.");
@@ -80,15 +80,15 @@ export default function NewTransaction() {
       };
 
       const response = addTransaction(transactionData)
-  
+
       if (response) {
         setSuccessMessage("Transação criada com sucesso!");
-        
+
         setTitle("");
         setAmount("");
-        setType("entrada");
+        setType("income");
         setCategory("");
-        
+
         setTimeout(() => {
           navigate("/transactions");
         }, 2000);
@@ -97,9 +97,9 @@ export default function NewTransaction() {
       }
     } catch (error) {
       console.error("Erro ao criar transação:", error);
-      
+
       let errorMessage = "Ocorreu um erro ao salvar a transação. Tente novamente.";
-      
+
       if (error.response) {
         if (error.response.status === 401) {
           errorMessage = "Sessão expirada. Por favor, faça login novamente.";
@@ -109,7 +109,7 @@ export default function NewTransaction() {
       } else if (error.message) {
         errorMessage = error.message;
       }
-      
+
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -129,7 +129,7 @@ export default function NewTransaction() {
             {error}
           </div>
         )}
-        
+
         {successMessage && (
           <div className="mb-4 p-3 bg-green-500/20 rounded-lg text-green-400 text-center">
             {successMessage}
@@ -172,23 +172,21 @@ export default function NewTransaction() {
               <button
                 type="button"
                 onClick={() => setType("income")}
-                className={`py-3 rounded-lg font-medium transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-zinc-900 cursor-pointer ${
-                  type === "income"
+                className={`py-3 rounded-lg font-medium transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-zinc-900 cursor-pointer ${type === "income"
                     ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white"
                     : "bg-zinc-800 text-gray-400 hover:bg-zinc-700"
-                }`}
+                  }`}
               >
                 Entrada
               </button>
-              
+
               <button
                 type="button"
                 onClick={() => setType("expense")}
-                className={`py-3 rounded-lg font-medium transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-zinc-900 cursor-pointer ${
-                  type === "expense"
+                className={`py-3 rounded-lg font-medium transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-zinc-900 cursor-pointer ${type === "expense"
                     ? "bg-gradient-to-r from-red-500 to-rose-600 text-white"
                     : "bg-zinc-800 text-gray-400 hover:bg-zinc-700"
-                }`}
+                  }`}
               >
                 Saída
               </button>
@@ -200,7 +198,7 @@ export default function NewTransaction() {
               </div>
               <input
                 type="text"
-                placeholder={`Categoria ${type === "entrada" ? "da receita" : "da despesa"}*`}
+                placeholder={`Categoria ${type === "income" ? "da receita" : "da despesa"}*`}
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 onFocus={() => setShowSuggestions(true)}
@@ -208,14 +206,14 @@ export default function NewTransaction() {
                 required
                 className="w-full pl-10 pr-4 py-3 bg-zinc-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-600"
               />
-              
+
               {showSuggestions && suggestedCategories.length > 0 && (
                 <div className="absolute z-10 w-full mt-1 bg-zinc-800 rounded-lg shadow-lg">
                   {suggestedCategories
-                    .filter(cat => 
-                      category ? 
-                      cat.toLowerCase().includes(category.toLowerCase()) : 
-                      true
+                    .filter(cat =>
+                      category ?
+                        cat.toLowerCase().includes(category.toLowerCase()) :
+                        true
                     )
                     .map((cat) => (
                       <div
@@ -246,9 +244,8 @@ export default function NewTransaction() {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-1/2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-zinc-900 ${
-                isLoading ? "opacity-70" : "hover:from-purple-700 hover:to-indigo-700 cursor-pointer"
-              }`}
+              className={`w-1/2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-zinc-900 ${isLoading ? "opacity-70" : "hover:from-purple-700 hover:to-indigo-700 cursor-pointer"
+                }`}
             >
               {isLoading ? (
                 <span className="flex items-center justify-center">

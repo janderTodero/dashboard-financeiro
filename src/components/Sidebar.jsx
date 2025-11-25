@@ -58,6 +58,12 @@ export default function Sidebar({ onNavigate }) {
             <h3>Importar fatura via CSV</h3>
           </Link>
         </div>
+        <div className="flex items-center gap-2">
+          <UploadCloud className="text-2xl text-purple-400" />
+          <Link to={"/transactions/import-bank-statement"} onClick={onNavigate}>
+            <h3>Importar Extrato Bancário</h3>
+          </Link>
+        </div>
 
         <div className="flex items-center gap-2">
           <TbLogout2 className="text-2xl text-purple-400" />

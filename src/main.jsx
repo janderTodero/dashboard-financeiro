@@ -13,6 +13,7 @@ import EditTransaction from "./pages/EditTransaction.jsx";
 import Transactions from "./pages/Transactions.jsx";
 import Reports from "./pages/Reports.jsx";
 import ImportCSV from "./pages/ImportCSV.jsx";
+import ImportBankStatement from "./pages/ImportBankStatement.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -29,6 +30,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <Route path="/transactions/edit/:id" element={<EditTransaction />} />
             <Route path="/transactions/reports" element={<Reports />} />
             <Route path="/transactions/import" element={<ImportCSV />} />
+            <Route path="/transactions/import-bank-statement" element={<ImportBankStatement />} />
           </Route>
         </Routes>
       </TransactionsProvider>
