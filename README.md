@@ -6,8 +6,9 @@ Aplicação fullstack para controle de finanças pessoais, desenvolvida para fac
 ## 🚀 Funcionalidades
 
 - Cadastro, listagem e visualização de transações financeiras (entradas e saídas)
+- Importação de Extrato Bancário (CSV) com categorização automática via IA (Google Gemini)
 - Autenticação de usuários via JWT
-- Dashboard com resumo financeiro e filtros por período
+- Dashboard com resumo financeiro e filtros por período (incluindo visão anual)
 - Integração com banco de dados MongoDB
 - Interface moderna e responsiva
 - Segurança dos dados do usuário
@@ -50,6 +51,7 @@ npm run dev
     ```
     MONGODB_URI=mongodb://localhost:27017/personalfin
     JWT_SECRET=sua_senha_secreta
+    GEMINI_API_KEY=sua_chave_api_gemini
     ```
 
 2. Ajuste as URLs de API no frontend caso necessário (`src/services/api.js`).
